@@ -3,12 +3,11 @@
 
 int cmd(char* cmd, ...) {
 
+    char command[CMD_BUFF_MAX]; // Ensure this size is sufficient commands
     va_list args;
-    char buff[CMD_BUFF_MAX];
-
     va_start(args, cmd);
-    vsnprintf(cmd, CMD_BUFF_MAX, cmd, args);
+    vsnprintf(command, sizeof(command), cmd, args);
     va_end(args);
 
-    return system(buff);
+    return system(command);
 }
