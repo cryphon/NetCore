@@ -19,10 +19,18 @@ static int set_addr(char* dev, char* cidr) {
     return cmd("ip address add dev %s local %s", dev, cidr);
 }
 
+// set interface up
 static int set_up(char* dev) {
     return cmd("ip link set dev %s up", dev);
-    }
+}
 
+int tun_read(char* buff, int len) {
+    return read(tun_fd, buff, len);
+}
+
+int tun_write(char* buff, int len) {
+    return write(tun_fd, buff, len);
+}
 
 
 // from TUN/TAP docs
