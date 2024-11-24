@@ -11,3 +11,17 @@ int cmd(char* cmd, ...) {
 
     return system(command);
 }
+
+
+int parse_ip(char* addr) {
+    struct in_addr ip_addr;
+
+    //parse IP addr string
+    int new_addr = inet_pton(AF_INET, addr, &ip_addr);
+    if(new_addr != 1) {
+        fprintf(stderr, "[ERROR]: Invalid ip format\n");
+        return -1;
+    }
+    return new_addr;
+}
+

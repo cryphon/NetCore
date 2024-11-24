@@ -10,6 +10,7 @@ set(SOURCES
     src/main.c
     src/tuntap.c
     src/utils.c
+    src/vn_device.c
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
