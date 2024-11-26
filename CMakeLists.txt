@@ -8,6 +8,8 @@ set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TEST_DIR ${CMAKE_SOURCE_DIR}/testing)
 
+SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include_directories(${INCLUDE_DIR})
 
 set(MAIN_SOURCE_FILES
@@ -15,10 +17,12 @@ set(MAIN_SOURCE_FILES
     ${SRC_DIR}/tuntap.c
     ${SRC_DIR}/utils.c
     ${SRC_DIR}/vn_device.c
+    ${SRC_DIR}/sk_buff.c
 )
 
 set(TEST_SOURCE_FILES
     ${TEST_DIR}/test_double_linked_list.c
+    ${TEST_DIR}/test_sk_buff.c
 )
 
 # main executable
@@ -43,9 +47,10 @@ set(TEST_TARGETS)
 foreach(TEST_FILE ${TEST_FILES})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     set(UNIQUE_TEST_NAME test_${TEST_NAME})
-    add_executable(${UNIQUE_TEST_NAME} ${TEST_FILE})
+    add_executable(${UNIQUE_TEST_NAME} ${TEST_FILE} ${SRC_DIR}/sk_buff.c ${SRC_DIR}/tuntap.c ${SRC_DIR}/utils.c)
     list(APPEND TEST_TARGETS ${UNIQUE_TEST_NAME})
 endforeach()
+
 
 # Add run_tests custom target to depend on all test executables
 add_custom_target(run_tests
