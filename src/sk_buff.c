@@ -87,3 +87,8 @@ void skb_reset(struct sk_buff* skb) {
     skb->payload_len = 0;
     skb->flags = 0;
 }
+
+
+uint8_t* skb_head(struct sk_buff* skb) {
+   return skb->head; 
+}

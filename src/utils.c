@@ -24,4 +24,3 @@ int parse_ip(char* addr) {
     }
     return new_addr;
 }
-

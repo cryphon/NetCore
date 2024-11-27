@@ -37,6 +37,7 @@ struct sk_buff* skb_alloc(uint32_t size);
 void skb_free(struct sk_buff* skb);
 int skb_add_data(struct sk_buff* skb, const unsigned char* data, uint32_t len);
 void skb_reset(struct sk_buff* skb);
+uint8_t* skb_head(struct sk_buff* skb);
 
 
 #endif // SK_BUFF_H

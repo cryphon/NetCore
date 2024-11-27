@@ -1,7 +1,11 @@
 #include "sysimp.h"
+
+#define DEBUG_ETH
 #include "vn_device.h"
 #include "tuntap.h"
 #include "utils.h"
+#include "sk_buff.h"
+#include "ethernet.h"
 
 struct vn_device* loop;
 struct vn_device* vn_device;
@@ -28,18 +32,28 @@ void vn_device_init() {
     vn_device = vn_device_alloc("testtest", "10.0.0.4", "00:0c:6d:50:25", 1500);
 }
 
+static int vn_device_recv(struct sk_buff* skb) {
+    struct eth_hdr* hdr = eth_hdr(skb);
+}
+
 void* vn_device_recqueue_loop() {
-    char buffer[2048];
+    struct sk_buff* skb = skb_alloc(BUFF_MAX_LEN);
 
     printf("listening on device %s\n", vn_device->name);
     while (1) {
-        int len = tun_read(buffer, sizeof(buffer));
-        if (len < 0) {
+        if(tun_read((char*)skb->data, BUFF_MAX_LEN) < 0) {
             perror("Error reading from TUN device");
+            free(skb);
             continue;
         }
 
-        printf("Received packet\n");
+        // assume first two bits are padded
+        skb->data += 2;
+
+        struct eth_hdr* hdr = (struct eth_hdr*) skb->data;
+        eth_dbg("Received frame", hdr);
+
+        // Additional processing
     }
-    return NULL;}
+}
 
