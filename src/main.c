@@ -20,7 +20,7 @@ int main(void) {
     tun_init();
     vn_device_init();
 
-    create_thread(0, vn_device_recqueue_loop);
+    create_thread(0, vn_device_recvqueue_loop);
 
 
     for (int i = 0; i < 3; i++) {

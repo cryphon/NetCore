@@ -16,7 +16,7 @@ typedef struct vn_device {      // Virutual Network Device
 
 void vn_device_init();
 int vn_device_transmit();
-void* vn_device_recqueue_loop();
+void* vn_device_recvqueue_loop();
 
 vndev* vndev_get(uint32_t sip);
 
