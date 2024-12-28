@@ -18,6 +18,7 @@ set(MAIN_SOURCE_FILES
     ${SRC_DIR}/utils.c
     ${SRC_DIR}/vn_device.c
     ${SRC_DIR}/sk_buff.c
+    ${SRC_DIR}/ipv6.c
 )
 
 set(TEST_SOURCE_FILES

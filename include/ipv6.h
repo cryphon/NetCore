@@ -2,6 +2,7 @@
 #define IPV6_H
 
 #include <stdint.h>
+#include "sk_buff.h"
 #include "sysimp.h"
 
 struct ipv6_hdr {
@@ -14,8 +15,11 @@ struct ipv6_hdr {
 } __attribute__((packed));
 
 static inline struct ipv6_hdr* ipv6_hdr(struct sk_buff* skb) {
-    return (struct ipv6_hdr*)(skb->data + 4);  // Skip TUN header
+    return (struct ipv6_hdr*)(skb);
 }
+
+void ipv6_recv(struct sk_buff* skb);
+
 
 #endif // IPV6_H
 
