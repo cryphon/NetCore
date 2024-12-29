@@ -24,6 +24,7 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${TEST_DIR}/test_double_linked_list.c
     ${TEST_DIR}/test_sk_buff.c
+    ${TEST_DIR}/test_ipv6_decoding.c
 )
 
 # main executable
