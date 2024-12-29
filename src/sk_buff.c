@@ -37,18 +37,12 @@ struct sk_buff* skb_alloc(uint32_t size) {
 
 }
 
-void skb_free(struct sk_buff* skb) {
-    if(!skb) {
-        return;
+void skb_free(struct sk_buff *skb) {
+    if (skb->data != NULL) {
+        free(skb->data);
+        skb->data = NULL;
+        skb->len = 0;
     }
-
-    // free allocated buffer
-    if(skb->head) {
-        free(skb->head);
-    }
-
-    // free sk_buff struct itself
-    free(skb);
 }
 
 
