@@ -66,6 +66,14 @@ int skb_add_data(struct sk_buff* skb, const unsigned char* data, uint32_t len) {
     return 0;
 }
 
+
+uint8_t* skb_push(struct sk_buff* skb, unsigned int len) {
+    skb->data -= len;
+    skb->len += len;
+
+    return skb->data;
+}
+
 void skb_reset(struct sk_buff* skb) {
     if(!skb) {
         return;
