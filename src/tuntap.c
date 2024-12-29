@@ -1,6 +1,8 @@
 #include "tuntap.h"
 #include "sysimp.h"
 #include "utils.h"
+#include "sk_buff.h"
+#include "unistd.h"
 
 static int tun_fd;
 static char* dev;
@@ -30,6 +32,40 @@ int tun_read(char* buff, int len) {
 
 int tun_write(char* buff, int len) {
     return write(tun_fd, buff, len);
+}
+
+int tun_write_skb(struct sk_buff* skb) {
+    ssize_t written;
+    size_t total = 0;
+    size_t length = skb->len;
+
+    // Print raw bytes in hex format
+    printf("Writing packet (%zu bytes):\n", length);
+    for (size_t i = 0; i < length; i++) {
+        printf("%02x ", skb->data[i]);
+        // Add newline every 16 bytes for readability
+        if ((i + 1) % 16 == 0) {
+            printf("\n");
+        }
+    }
+    printf("\n");
+
+    while (total < length) {
+        written = write(tun_fd, skb->data + total, length - total);
+        
+        if (written < 0) {
+            if (errno == EINTR) {
+                continue;
+            }
+            printf("Error writing to TUN device: %s\n", strerror(errno));
+            return -1;
+        }
+        
+        total += written;
+    }
+
+    printf("Successfully wrote %zu bytes\n", total);
+    return total;
 }
 
 
