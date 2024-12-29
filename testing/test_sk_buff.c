@@ -1,61 +1,58 @@
 #include "sysimp.h"
 #include "sk_buff.h"
 
-// Function to print the state of a sk_buff
-void print_sk_buff(struct sk_buff* skb) {
-    if (!skb) {
-        printf("sk_buff is NULL.\n");
-        return;
-    }
-    printf("sk_buff state:\n");
-    printf("  Data length: %u\n", skb->len);
-    printf("  Buffer start: %p\n", skb->head);
-    printf("  Data start: %p\n", skb->data);
-    printf("  Tail: %p\n", skb->tail);
-    printf("  End: %p\n", skb->end);
-    if (skb->network_hdr) {
-        printf("  Network header: %p\n", skb->network_hdr);
-    } else {
-        printf("  Network header: NULL\n");
-    }
-    if (skb->transport_hdr) {
-        printf("  Transport header: %p\n", skb->transport_hdr);
-    } else {
-        printf("  Transport header: NULL\n");
-    }
-    printf("  Flags: %u\n", skb->flags);
+
+#include <CUnit/CUnit.h>
+#include <CUnit/Basic.h>
+
+void test_skb_allocation() {
+    struct sk_buff* skb = skb_alloc(2048);
+
+    CU_ASSERT_PTR_NOT_NULL(skb->data);
+    CU_ASSERT_EQUAL(skb->len, 0);
+
+    // Add data after allocation to verify buffer functionality
+    const char *test_data = "Hello, sk_buff!";
+    memcpy(skb->data, test_data, strlen(test_data) + 1);  // +1 for null terminator
+    skb->len = strlen(test_data);
+
+    CU_ASSERT_EQUAL(skb->len, strlen(test_data));
+    CU_ASSERT_STRING_EQUAL((char *)skb->data, test_data);
+
+    skb_free(skb);
 }
 
-int main() {
-    // Step 1: Allocate a sk_buff
-    struct sk_buff* skb = skb_alloc(2048);
-    if (!skb) {
-        fprintf(stderr, "Failed to allocate sk_buff.\n");
-        return 1;
-    }
-    printf("Allocated sk_buff.\n");
-    print_sk_buff(skb);
 
-    // Step 2: Add data to the sk_buff
-    const char test_data[] = "Hello, sk_buff!";
-    if (skb_add_data(skb, (unsigned char*)test_data, sizeof(test_data)) == 0) {
-        printf("Added data to sk_buff.\n");
-    } else {
-        fprintf(stderr, "Failed to add data to sk_buff.\n");
-        skb_free(skb);
-        return 1;
-    }
-    print_sk_buff(skb);
-
-    // Step 3: Reset the sk_buff
-    skb_reset(skb);
-    printf("Reset sk_buff.\n");
-    print_sk_buff(skb);
-
-    // Step 4: Free the sk_buff
+void test_skb_free() {
+    struct sk_buff* skb = skb_alloc(128);
     skb_free(skb);
-    printf("Freed sk_buff.\n");
 
+    CU_ASSERT_PTR_NULL(skb->data);
+    CU_ASSERT_EQUAL(skb->len, 0);
+
+    // Test double free
+    skb_free(skb);
+    CU_ASSERT_PTR_NULL(skb->data);
+    CU_ASSERT_EQUAL(skb->len, 0);
+}
+
+
+int main() {
+    CU_initialize_registry();
+
+    CU_pSuite suite = CU_add_suite("sk_buff Tests", 0, 0);
+    if (suite == NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+;
+    CU_add_test(suite, "skb Allocation", test_skb_allocation);
+    CU_add_test(suite, "skb Free", test_skb_free);
+
+    CU_basic_set_mode(CU_BRM_VERBOSE);
+    CU_basic_run_tests();
+
+    CU_cleanup_registry();
     return 0;
 }
 

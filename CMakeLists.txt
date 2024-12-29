@@ -45,10 +45,20 @@ message(STATUS "Test files found: ${TEST_FILES}")
 # Collect all test target names
 set(TEST_TARGETS)
 
+
+# CUnit Integration
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CUNIT REQUIRED cunit)
+
 foreach(TEST_FILE ${TEST_FILES})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     set(UNIQUE_TEST_NAME test_${TEST_NAME})
     add_executable(${UNIQUE_TEST_NAME} ${TEST_FILE} ${SRC_DIR}/sk_buff.c ${SRC_DIR}/tuntap.c ${SRC_DIR}/utils.c)
+
+    # Link with CUnit
+    target_link_libraries(${UNIQUE_TEST_NAME} ${CUNIT_LIBRARIES})
+    target_include_directories(${UNIQUE_TEST_NAME} PRIVATE ${CUNIT_INCLUDE_DIRS})
+
     list(APPEND TEST_TARGETS ${UNIQUE_TEST_NAME})
 endforeach()
 
