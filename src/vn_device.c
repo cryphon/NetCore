@@ -7,6 +7,7 @@
 #include "sk_buff.h"
 #include "ethernet.h"
 #include "ipv6.h"
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 struct vn_device* loop;
 struct vn_device* vn_device;
@@ -60,6 +61,14 @@ void* vn_device_recvqueue_loop() {
             perror("Error reading from TUN device");
             continue;
         }
+
+        printf("\nRaw packet data (first 64 bytes):\n");
+        for (int i = 0; i < MIN(bytes_read, 64); i++) {
+            if (i % 16 == 0) printf("%04x: ", i);
+            printf("%02x ", skb->data[i]);
+            if ((i + 1) % 16 == 0) printf("\n");
+        }
+        printf("\n");
 
         vn_device_recv(skb);
 
