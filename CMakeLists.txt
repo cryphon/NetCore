@@ -19,12 +19,14 @@ set(MAIN_SOURCE_FILES
     ${SRC_DIR}/netdev.c
     ${SRC_DIR}/sk_buff.c
     ${SRC_DIR}/ipv6.c
+    ${SRC_DIR}/icmp.c
 )
 
 set(TEST_SOURCE_FILES
     ${TEST_DIR}/test_double_linked_list.c
     ${TEST_DIR}/test_sk_buff.c
     ${TEST_DIR}/test_ipv6_decoding.c
+    ${TEST_DIR}/test_icmpv6.c
 )
 
 # main executable
@@ -54,7 +56,7 @@ pkg_check_modules(CUNIT REQUIRED cunit)
 foreach(TEST_FILE ${TEST_FILES})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     set(UNIQUE_TEST_NAME test_${TEST_NAME})
-    add_executable(${UNIQUE_TEST_NAME} ${TEST_FILE} ${SRC_DIR}/sk_buff.c ${SRC_DIR}/tuntap.c ${SRC_DIR}/utils.c)
+    add_executable(${UNIQUE_TEST_NAME} ${TEST_FILE} ${SRC_DIR}/sk_buff.c ${SRC_DIR}/tuntap.c ${SRC_DIR}/utils.c ${SRC_DIR}/icmp.c)
 
     # Link with CUnit
     target_link_libraries(${UNIQUE_TEST_NAME} ${CUNIT_LIBRARIES})
