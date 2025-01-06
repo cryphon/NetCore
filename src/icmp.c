@@ -46,6 +46,13 @@ void send_icmpv6_ra() {
     ra->reachable_time = 0;
     ra->retrans_timer = 0;
 
+
+                printf(" - Hop Limit: %d\n", ra->hop_limit);
+            printf(" - Flags: 0x%02x\n", ra->flags);
+            printf(" - Router Lifetime: %d seconds\n", ntohs(ra->router_lifetime));
+            printf(" - Reachable Time: %u ms\n", ntohl(ra->reachable_time));
+            printf(" - Retransmission Timer: %u ms\n", ntohl(ra->retrans_timer));
+
     // setup Prefix Information option
     struct icmpv6_prefix* prefix = &ra->options;
     prefix->type = 3;
