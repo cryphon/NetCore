@@ -7,8 +7,10 @@
 static int tun_fd;
 static char* dev;
 
-char* tap_addr = "10.0.0.5";
-char* tap_route = "10.0.0.0/24";
+char* tap_addr_v4 = "10.0.0.5";
+char* tap_route_v4 = "10.0.0.0/24";
+char* tap_addr_v6 = "2001:db8::1/64";
+char* tap_route_v6 = "2001:db8::/64";
 
 
 // set interface address route
@@ -99,7 +101,7 @@ static int tun_alloc(char* dev, int flags) {
 
 void tun_init(void) {
     dev = calloc(10, 1);  
-    tun_fd = tun_alloc(dev, IFF_TUN | IFF_NO_PI); 
+    tun_fd = tun_alloc(dev, IFF_TAP); 
 
     if (tun_fd < 0) {
         perror("[ERROR]: Failed to allocate TUN device");
@@ -112,18 +114,32 @@ void tun_init(void) {
         free(dev);
         return;
     }
-
-    if(set_route(dev, tap_route) != 0) {
-        perror("[ERROR]: interface set_route failed");
+    // IPv4 setup
+    if(set_route(dev, tap_route_v4) != 0) {
+        perror("[ERROR]: interface set_route V4 failed");
         free(dev);
         return;
     }
 
-    if(set_addr(dev, tap_addr) != 0) {
-        perror("[ERROR]: interface set_addr failed");
+    if(set_addr(dev, tap_addr_v4) != 0) {
+        perror("[ERROR]: interface set_addr V4 failed");
         free(dev);
         return;
     }
+
+    // IPv6 setup
+    if(set_route(dev, tap_route_v6) != 0) {
+        perror("[ERROR]: interface set_route V6 failed");
+        free(dev);
+        return;
+    }
+
+    if(set_addr(dev, tap_addr_v6) != 0) {
+        perror("[ERROR]: interface set_addr V6 failed");
+        free(dev);
+        return;
+    }
+
 }
 
 
