@@ -36,17 +36,19 @@ void netdev_init() {
 
 static int netdev_recv(struct sk_buff* skb) {
     struct eth_hdr* hdr = eth_hdr(skb);
-
+    
+    printf("Received packet type: 0x%04x\n", hdr->ether_type);
+    
     switch(hdr->ether_type) {
-        case 0x86DD:
-            // IPv6
+        case 0x86DD: {
+            struct ipv6_hdr* ip6_hdr = ipv6_hdr(skb); 
             ipv6_recv(skb);
             break;
+        }
         default:
-            printf("default behaviour\n");
+            printf("Unhandled packet type 0x%04x\n", hdr->ether_type);
     }
     return 0;
-
 }
 
 void* netdev_recvqueue_loop() {
