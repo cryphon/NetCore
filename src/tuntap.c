@@ -39,16 +39,6 @@ int tun_write_skb(struct sk_buff* skb) {
     size_t total = 0;
     size_t length = skb->len;
 
-    // Print raw bytes in hex format
-    printf("Writing packet (%zu bytes):\n", length);
-    for (size_t i = 0; i < length; i++) {
-        printf("%02x ", skb->data[i]);
-        // Add newline every 16 bytes for readability
-        if ((i + 1) % 16 == 0) {
-            printf("\n");
-        }
-    }
-    printf("\n");
 
     while (total < length) {
         written = write(tun_fd, skb->data + total, length - total);

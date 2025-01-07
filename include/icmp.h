@@ -2,10 +2,9 @@
 #define ICMP_H
 
 #include "sysimp.h"
-#include "sk_buff.h" 
-#include "tuntap.h"
+#include "sk_buff.h"
 #include "ipv6.h"
-
+#include "tuntap.h"
 
 // ICMPv6 type definitions
 #define ICMPV6_ROUTER_SOLICITATION     133
@@ -18,7 +17,7 @@
 
 // ICMPv6 header structure
 struct icmpv6_hdr {
-    uint8_t type;                   // Type = 133 for RA
+    uint8_t type;                   // Type
     uint8_t code;                   // Code = 0 
     uint16_t checksum;              // Checksum
 } __attribute__((packed));
@@ -33,19 +32,6 @@ struct icmpv6_prefix {
     uint32_t reserved;               // Reserved field
     uint8_t prefix[16];             // The prefix
 } __attribute__((packed));
-
-
-// Router Advertisement specific structure
-struct icmpv6_ra {
-    struct icmpv6_hdr hdr;          // Header metadata
-    uint8_t hop_limit;              // Hop limit
-    uint8_t flags;                  // M & O flags
-    uint16_t router_lifetime;       // Router Lifetime
-    uint32_t reachable_time;        // Reachable Time
-    uint32_t retrans_timer;         // Retransmission Timer
-    struct icmpv6_prefix options; // Prefix, MTU, etc...
-} __attribute__((packed));
-
 
 
 void send_icmpv6_ra();

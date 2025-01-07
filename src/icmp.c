@@ -1,9 +1,9 @@
+#include "ndp.h"
 #include "icmp.h"
-
 
 void send_icmpv6_ra() {
     // reads from Router Soliciation (RS) and sends Router Advertisement (RA)
-    size_t total_size = 4 + sizeof(struct ipv6_hdr) + sizeof(struct icmpv6_ra) + sizeof(struct icmpv6_prefix);
+    size_t total_size = 4 + sizeof(struct ipv6_hdr) + sizeof(struct ndp_ra) + sizeof(struct icmpv6_prefix);
 
 
     struct sk_buff* skb = skb_alloc(total_size);
@@ -16,7 +16,7 @@ void send_icmpv6_ra() {
 
     // setup header
     ipv6->vtf = htonl(0x60000000);      // Version 6
-    ipv6->payload_len = htons(sizeof(struct icmpv6_ra) + sizeof(struct icmpv6_prefix));
+    ipv6->payload_len = htons(sizeof(struct ndp_ra) + sizeof(struct icmpv6_prefix));
     ipv6->next_hdr = 58;                // ICMPv6
     ipv6->hop_limit = 255;              // Hop Limit
 
@@ -36,7 +36,7 @@ void send_icmpv6_ra() {
 
 
     // Set up Router Advertisement
-    struct icmpv6_ra* ra = (struct icmpv6_ra*)(skb->data + sizeof(struct ipv6_hdr));
+    struct ndp_ra* ra = (struct ndp_ra*)(skb->data + sizeof(struct ipv6_hdr));
     ra->hdr.type = ICMPV6_ROUTER_ADVERTISEMENT;
     ra->hdr.code = 0;
     ra->hdr.checksum = 0;  // Will be calculated later
@@ -47,7 +47,7 @@ void send_icmpv6_ra() {
     ra->retrans_timer = 0;
 
 
-                printf(" - Hop Limit: %d\n", ra->hop_limit);
+            printf(" - Hop Limit: %d\n", ra->hop_limit);
             printf(" - Flags: 0x%02x\n", ra->flags);
             printf(" - Router Lifetime: %d seconds\n", ntohs(ra->router_lifetime));
             printf(" - Reachable Time: %u ms\n", ntohl(ra->reachable_time));
@@ -81,7 +81,7 @@ void send_icmpv6_ra() {
 
 
     // calculate ICMPv6 checksum
-    size_t icmp_len = sizeof(struct icmpv6_ra) + sizeof(struct icmpv6_prefix);
+    size_t icmp_len = sizeof(struct ndp_ra) + sizeof(struct icmpv6_prefix);
     uint32_t sum = 0;
 
     // pseudo pointer 
@@ -134,7 +134,7 @@ void handle_icmpv6(struct sk_buff* skb) {
         case 128:
             //echo 
             break;
-        case 133:
+        case ICMPV6_ROUTER_SOLICITATION:
             // router solicitation
             printf("router solicitation\n");
             send_icmpv6_ra();
