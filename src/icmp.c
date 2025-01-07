@@ -1,5 +1,6 @@
-#include "ndp.h"
 #include "icmp.h"
+#include "router_discovery.h"
+#include "ndp.h"
 
 void send_icmpv6_ra() {
     // reads from Router Soliciation (RS) and sends Router Advertisement (RA)
@@ -132,12 +133,19 @@ void handle_icmpv6(struct sk_buff* skb) {
     struct icmpv6_hdr* hdr = (struct icmpv6_hdr*)curr_hdr;
     switch(hdr->type) {
         case 128:
+            printf("ping request\n");
             //echo 
             break;
         case ICMPV6_ROUTER_SOLICITATION:
             // router solicitation
             printf("router solicitation\n");
             send_icmpv6_ra();
+            break;
+        case ICMPV6_ROUTER_ADVERTISEMENT:
+            printf("router advertisement\n");
+            break;
+        case ICMPV6_NEIGHBOR_SOLICITATION:
+            printf("NDP: neighbor solicitation\n");
             break;
     }
 }

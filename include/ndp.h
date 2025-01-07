@@ -1,17 +1,24 @@
 #include "sysimp.h"
 #include "icmp.h"
 
-
-// Router Advertisement specific structure
-struct ndp_ra {
+// NDP Neighbor Solicit
+struct ndp_neighbor_sol {
     struct icmpv6_hdr hdr;          // Header metadata
-    uint8_t hop_limit;              // Hop limit
-    uint8_t flags;                  // M & O flags
-    uint16_t router_lifetime;       // Router Lifetime
-    uint32_t reachable_time;        // Reachable Time
-    uint32_t retrans_timer;         // Retransmission Timer
-    struct icmpv6_prefix options; // Prefix, MTU, etc...
+    uint32_t reserved;              // Reserved field (must be 0)
+    uint8_t target_addr[16];        // Target IPv6 addr
+    // Optional ICMPv6 options (e.g., Source Link-Layer Addr)
+    uint8_t options[];              // Variable-length options (if any)
 } __attribute__((packed));
+
+// NDP Neighbor Advertisement
+struct ndp_neighbor_adv {
+    struct icmpv6_hdr hdr;          // Header metadata
+    uint32_t flags_reserved;        // Flags and reserved fields     
+    uint8_t target_addr[16];        // Target IPv6 addr
+    // Optional ICMPv6 options
+    uint8_t options[];              // Variable-length options (if any)
+} __attribute__((packed));
+
 
 
 
