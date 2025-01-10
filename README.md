@@ -8,7 +8,7 @@ A lightweight IPv6 network stack implementation focusing on fundamental network 
  - Neighbor Discovery Protocol (NDP)
    - ✅ Router Solicitation handling
    - ✅ Router Advertisement generation and sending
-   - Neighbor Solicitation/Advertisement (planned)
+   - Neighbor Solicitation/Advertisement (in progress)
    - Redirect messages (planned)
 - IPv6 Extension Headers support (planned)
 - Binary packet manipulation and processing
