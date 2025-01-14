@@ -18,7 +18,7 @@ A lightweight IPv6 network stack implementation focusing on fundamental network 
 
 ### Packet Processing
 The stack processes IPv6 packets through several stages:
-1. TUN interface packet capture and raw packet inspection
+1. TUN interface packet capture and raw packet inspection (L3)
 2. IPv6 header parsing
 3. Protocol-specific handling (e.g., ICMPv6)
 4. NDP message processing and response generation
